@@ -27,11 +27,12 @@ const clienteModels = {
         return rows;
     },
     update: async (pId, pNomeCliente, pCpfCLiente) => { //Alteração dos dados do cliente;
-        const sql = 'UPDATE produtos SET nome_cliente=?, cpf_cliente=? WHERE id_cliente=?;'
+        const sql = 'UPDATE clientes SET nome_cliente=?, cpf_cliente=? WHERE id_cliente=?;'
         const values = [pNomeCliente, pCpfCLiente, pId];
         const [rows] = await pool.query(sql, values);
         return rows;
     },
+    
     delete: async (pId) => { // Deleção de clientes
         const sql = 'DELETE FROM clientes WHERE id_cliente = ?;';
         const values = [pId];

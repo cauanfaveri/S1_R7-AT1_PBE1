@@ -1,5 +1,6 @@
 
-const { clienteModels } = require("../models/clienteModels")
+const { clienteModels } = require("../models/clienteModels");
+const { produtoModel } = require("../models/produtoModel");
 
 const clienteController = {
     /**
@@ -36,21 +37,12 @@ const clienteController = {
             if (!descricao || !cpf) {
                 return res.status(400).json({ message: 'Verifique os dados enviado e tente novamente' });
             }
-
-            // Verifica se o CPF informado já está inserido
-            const clienteExistente = await clienteModel.findByCpf(cpf);
-            if (clienteExistente && clienteExistente.length > 0) {
-                return res.status(409).json({
-                    message: 'O CPF informado já está cadastrado no sistema.',
-                    cpf: cpf
-                });
-            }
             try {
                 const { descricao, cpf } = req.body;
-                if (!descricao || !cpf || !isNaN(cpf)) {
+                if (!descricao || !cpf ) {
                     return res.status(400).json({ message: 'Verifique os dados enviado e tente novamente' });
                 }
-                const resultado = await clienteModel.insert(descricao, cpf);
+                const resultado = await clienteModels.insertCliente(descricao, cpf);
                 if (resultado.insertId === 0) {
                     throw new Error('Ocorreu um erro ao incluir o cliente');
                 }
@@ -70,12 +62,12 @@ const clienteController = {
             const idCliente = Number(req.params.idCliente);
             const { descricao, cpf } = req.body;
 
-            if (!idCliente || (!descricao && !cpf) || isNaN(valor) || typeof idCliente != 'number') {
-                return res.status(400).json({ message: 'Verifique os dados enviado e tente novamente' });
+            if (!idCliente || (!descricao && !cpf) || isNaN(cpf) || typeof idCliente != 'number') {
+                return res.status(400).json({ message: 'Verifiqueee os dados enviado e tente novamente' });
             }
 
-            const clienteAtual = await clienteControllerModel.selectById(idCliente);
-            if (produtoAtual.length === 0) {
+            const clienteAtual = await produtoModel.selectById(idCliente);
+            if (clienteAtual.length === 0) {
                 return res.status(200).json({ message: 'Client não foi localizado não localizado' });
             }
 
@@ -83,7 +75,7 @@ const clienteController = {
             const novoCpf = cpf ?? clienteAtual[0].cpf_cliente;
             console.log(novaDescricao, novoCpf);
 
-            const resultUpdate = await clienteModel.update(idCliente, novaDescricao, novoCpf);
+            const resultUpdate = await clienteModels.update(idCliente, novaDescricao, novoCpf);
 
             if (resultUpdate.affectedRows === 1 && resultUpdate.changedRows === 0) {
                 return res.status(200).json({ message: 'Não há alterações a serem realizadas' });
@@ -105,13 +97,13 @@ const clienteController = {
             if (!idCliente || !Number.isInteger(idCliente)) {
                 return res.status(400).json({ message: 'Forneça um identificador válido' })
             }
-            const clienteSelecionado = await clienteModel.selectById(idCliente);
+            const clienteSelecionado = await clienteModels.selectById(idCliente);
             if (clienteSelecionado.length === 0) {
-                return res.status(200).json({ message: 'Produto ñ localizado' });
+                return res.status(200).json({ message: 'Cliente ñ localizado' });
             }
             const resultadoDelete = await clienteModel.delete(idProduto);
             if (resultadoDelete.affectedRows === 0) {
-                return res.status(200).json({ message: 'Erro ao excluir produto' })
+                return res.status(200).json({ message: 'Erro ao excluir cliente' })
             }
             res.status(200).json({
                 message: 'Produto excluído com sucesso',
