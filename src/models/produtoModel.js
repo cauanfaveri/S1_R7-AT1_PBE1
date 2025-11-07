@@ -64,6 +64,7 @@ const produtoModel = {
         const [rows] = await pool.query(sql, values);
         return rows;
     }
+    
 }
 
 module.exports = { produtoModel };

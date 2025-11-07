@@ -97,16 +97,16 @@ const clienteController = {
             if (!idCliente || !Number.isInteger(idCliente)) {
                 return res.status(400).json({ message: 'Forneça um identificador válido' })
             }
-            const clienteSelecionado = await clienteModels.selectById(idCliente);
+            const clienteSelecionado = await clienteModels.delete(idCliente);
             if (clienteSelecionado.length === 0) {
                 return res.status(200).json({ message: 'Cliente ñ localizado' });
             }
-            const resultadoDelete = await clienteModel.delete(idProduto);
-            if (resultadoDelete.affectedRows === 0) {
+            const resultadoDelete = await clienteModels.delete(idCliente);
+            if (resultadoDelete.affectedRows === 1) {
                 return res.status(200).json({ message: 'Erro ao excluir cliente' })
             }
             res.status(200).json({
-                message: 'Produto excluído com sucesso',
+                message: 'CLiente excluído com sucesso',
                 data: resultadoDelete
             });
         } catch (error) {
